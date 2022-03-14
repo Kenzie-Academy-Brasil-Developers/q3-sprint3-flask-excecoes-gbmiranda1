@@ -27,15 +27,28 @@ def read_json(filepath: str) -> list:
 
 
 def write_json(filepath: str, payload: dict):
-    json_list = read_json(filepath)
-    json_list["data"].append(payload)
+    try:
+        json_list = read_json(filepath)
+        json_list["data"].append(payload)
 
-    print(f"{json_list=}")
+        print(f"{json_list=}")
 
-    with open(filepath, "w") as json_file:
-        json.dump(json_list, json_file, indent=2)
+        with open(filepath, "w") as json_file:
+            json.dump(json_list, json_file, indent=2)
 
-        return payload
+            return payload
+    except FileNotFoundError:
+        os.mknod(filepath)
+        json_list = read_json(filepath)
+        json_list["data"].append(payload)
+
+        print(f"{json_list=}")
+
+        with open(filepath, "w") as json_file:
+            json.dump(json_list, json_file, indent=2)
+
+            return payload
+        
 
 def checkEmailExists(email):
     data = read_json(FILEPATH)
