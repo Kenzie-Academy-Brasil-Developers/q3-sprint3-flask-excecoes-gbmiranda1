@@ -20,17 +20,19 @@ def getUser():
 def postUser():
     try:
         data = request.get_json()
-        name = data["name"]
-        email = data["email"]
-        if (name and email):
-            if(type(name) == str and type(email) == str):
-                checkEmailExists(email)
-                print(data)
-                result = checkIsUpper(name, email)
-                idUser = checkId()
-                return write_json(FILEPATH, {"id": idUser,"name": result[0], "email": result[1]})
-            else:
-                raise IsNumericError
+        if "name" in data and "email" in data:
+            name = data["name"]
+            email = data["email"]
+        else:
+            return {"error": "faltam parametros"}, 405
+        if(type(name) == str and type(email) == str):
+            checkEmailExists(email)
+            print(data)
+            result = checkIsUpper(name, email)
+            idUser = checkId()
+            return write_json(FILEPATH, {"id": idUser,"name": result[0], "email": result[1]})
+        else:
+            raise IsNumericError
     except IsNumericError as e:
         return {"error": e.message}, e.status_code
     except EmailExistError as e:
