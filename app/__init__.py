@@ -32,8 +32,6 @@ def postUser():
             idUser = checkId()
             return write_json(FILEPATH, {"id": idUser,"name": result[0], "email": result[1]})
         else:
-            raise IsNumericError
-    except IsNumericError as e:
-        return {"error": e.message}, e.status_code
+            return jsonify({"wrong fields":[{"name": str(type(data["name"]))[8:-2]}, {"email": str(type(data["email"]))[8:-2]}]}), 400
     except EmailExistError as e:
         return {"error": e.message}, e.status_code
